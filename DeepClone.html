@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        let obj = {
+            a: 100,
+            b: [10, 20, 30],
+            c: {
+                x: 10
+            },
+            d: /^\d+$/
+        }
+        // 浅克隆
+        /* 
+        let obj2 = {}
+        for (let key in obj) {
+                    if (!obj.hasOwnProperty(key)) break
+                    obj2[key] = obj[key]
+                }
+                console.log(obj, obj2); 
+                */
+        // es6 的浅克隆
+        /*     let obj2 = { ...obj }
+            console.log(obj, obj2); */
+        // 深克隆
+
+        /* 
+        let obj2 = JSON.stringify(obj)
+        obj2 = JSON.parse(obj2)
+        console.log(obj2);
+        // 弊端: 函数 日期 正则 JSON.stringify 都会出现问题 
+         */
+
+        function deepClone(obj) {
+            // =>过滤特殊情况
+            if (obj === null) return null;
+            if (typeof obj !== 'object') return obj;
+            if (obj instanceof RegExp) {
+                return new RegExp(obj)
+            }
+            if (obj instanceof Date) {
+                return new Date(obj)
+            }
+            // =>不直接创建空对象目的：克隆的结果和之前保持相同的所属类
+            let newObj = new obj.constructor;
+            for (let key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    newObj[key] = deepClone(obj[key])
+                }
+            }
+            return newObj
+        }
+        let obj2 = deepClone(obj)
+        obj2.c.x = 20
+        console.log(obj, obj2);
+
+
+        let arr = [10, [100, 200], {
+            x: 10,
+            y: 20
+        }]
+
+        let arr2 = deepClone(arr)
+        console.log(arr2);
+    </script>
+</body>
+
+</html>
